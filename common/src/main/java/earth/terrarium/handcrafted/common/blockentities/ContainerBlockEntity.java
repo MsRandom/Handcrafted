@@ -6,8 +6,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
@@ -63,5 +65,15 @@ public class ContainerBlockEntity extends RandomizableContainerBlockEntity {
     @Override
     public int getContainerSize() {
         return 27;
+    }
+
+    @Override
+    public void startOpen(Player player) {
+        player.playSound(SoundEvents.CHEST_OPEN, 1.0f, 1.0f);
+    }
+
+    @Override
+    public void stopOpen(Player player) {
+        player.playSound(SoundEvents.CHEST_CLOSE, 1.0f, 1.0f);
     }
 }
