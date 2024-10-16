@@ -19,8 +19,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.vehicle.DismountHelper;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.RespawnAnchorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.entity.EntityInLevelCallback;
 import net.minecraft.world.phys.AABB;
@@ -93,8 +93,14 @@ public class Seat extends Entity {
 
     @Override
     public Vec3 getDismountLocationForPassenger(LivingEntity passenger) {
-        return RespawnAnchorBlock.findStandUpPosition(passenger.getType(), this.level(), this.blockPosition())
-            .orElse(super.getDismountLocationForPassenger(passenger));
+        Direction facing = this.getDirection();
+        for (Direction offset : new Direction[]{facing, facing.getClockWise(), facing.getCounterClockWise(), facing.getOpposite()}) {
+            Vec3 safeLocation = DismountHelper.findSafeDismountLocation(passenger.getType(), this.level(), this.blockPosition().relative(offset), false);
+            if (safeLocation != null) {
+                return safeLocation.add(0, 0.25, 0);
+            }
+        }
+        return super.getDismountLocationForPassenger(passenger);
     }
 
     @Override
